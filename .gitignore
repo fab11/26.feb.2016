@@ -1,0 +1,50 @@
+library (foreign)
+require (foreign)
+baseinegi<-read.dbf("C:\\Users\\SALA-C26\\Downloads\\sdemt205.dbf")
+#Metodo 1
+#attach(baseinegi)
+baseinegi$CLASE2.1[as.numeric(baseinegi$CLASE2) >= 0 & as.numeric(baseinegi$CLASE2)<=2] <- 1
+baseinegi$CLASE2.1[as.numeric(baseinegi$CLASE2) >= 3 & as.numeric(baseinegi$CLASE2)<=4] <- 2
+#detach(baseinegi) 
+
+#Metodo2
+attach(baseinegi)
+baseinegi$CLASE2.2 <- ifelse(as.numeric(CLASE2) >= 1 & as.numeric(CLASE2)<=2,1, ifelse(as.numeric(CLASE2) >= 3 & as.numeric(CLASE2)<=3,2, 3))
+detach(baseinegi) 
+
+#4.1.1 Comparacion de los tres metodos
+install.packages("questionr")
+require (questionr)
+table (baseinegi$CLASE2.1)
+table (baseinegi$CLASE2.2)
+wtd.table(baseinegi$CLASE2.1)
+wtd.table(baseinegi$CLASE2.2)
+
+table (baseinegi$EDAD11)
+
+########################### EJERCICIO RECODIFICAR VARIABLE EDAD#########################
+### 0 A 14= 1 NIÑ@S, 15 A 29=  2 JOVENES, 30 A 59= 3 ADULTOS , 60 A 97 = 4 ADULTOS MAYORES , 98Y 99= 5 NO ESPECIFICADO
+#### POR LOS DOS METODOS.... 
+### DESPUES ETIQUETAN LOS GRUPOS (SI DA TIEMPO))
+#### COMPARAR METODOS#############
+attach(baseinegi)
+baseinegi$EDA.1[as.numeric(baseinegi$EDA) >= 1 & as.numeric(baseinegi$EDA)<=15] <- 1
+baseinegi$EDA.1[as.numeric(baseinegi$EDA) >= 16 & as.numeric(baseinegi$EDA)<=30] <- 2
+baseinegi$EDA.1[as.numeric(baseinegi$EDA) >= 31 & as.numeric(baseinegi$EDA)<=60] <- 3
+baseinegi$EDA.1[as.numeric(baseinegi$EDA) >= 61 & as.numeric(baseinegi$EDA)<=98] <- 4
+baseinegi$EDA.1[as.numeric(baseinegi$EDA) >= 99 & as.numeric(baseinegi$EDA)<=100] <- 5
+detach(baseinegi)
+
+require (questionr)
+wtd.table(baseinegi$EDA.1)
+table (baseinegi$EDA.1)
+
+
+#Metodo2
+attach(baseinegi)
+baseinegi$EDA.2 <- ifelse(as.numeric(EDA) >= 1 & as.numeric(EDA)<=15,1, ifelse(as.numeric(EDA) >= 16 & as.numeric(EDA)<=30,2, ifelse(as.numeric(EDA) >= 31 & as.numeric(EDA)<=60,3, ifelse(as.numeric(EDA) >= 61 & as.numeric(EDA)<=98,4, 5))))
+detach(baseinegi) 
+
+###ETIQUETAR#########################
+baseinegi$EDA.1<-ordered(baseinegi$EDA.1, levels = c("1","2","3","4","5"), labels = c("niños","jovenes","adultos","adultos mayores","no especificado"))
+baseinegi$EDA.2<-ordered(baseinegi$EDA.1, levels = c("1","2","3","4","5"), labels = c("niños","jovenes","adultos","adultos mayores","no especificado"))
